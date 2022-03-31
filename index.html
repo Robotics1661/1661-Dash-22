@@ -22,7 +22,7 @@
     <header>
         <div id="title"> The GRIFFITRONS </div>
         <div id="subtitle"> FRC #1661 </div>
-        <div id="name">Name</div>
+        <div id="name">Eve</div>
         <div id="robot-state">ROBOT STATUS: unknown</div>
         <div id="timer">REMAINING TIME: 0:00</div>
     </header>
@@ -31,6 +31,12 @@
     <div class="field box" id="field-box">
 
         <!-- In this prelim. HTML: Blue is 1, Red is 2 -->
+        <div class="gray-line dividing-line" id="field-top-line-1"></div>
+        <!-- <div class="tarmac color-blue" id="field-left-rocket-1"></div> -->
+        <!-- <svg class="tarmac-1" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1132.22 630.86"><defs><style>.cls-1{fill:#ff0000;}</style></defs><polygon class="cls-1" points="738.78 630.86 385.97 630.86 0 233.37 566.11 0 1132.21 233.37 738.78 630.86"/></svg> -->
+        <!-- <svg class="tarmac-2" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1132.22 630.86"><defs><style>.cls-1{fill:#ff0000;}</style></defs><polygon class="cls-1" points="738.78 630.86 385.97 630.86 0 233.37 566.11 0 1132.21 233.37 738.78 630.86"/></svg> -->
+        <img class="tarmac" src="./src/img/tarmac.png"/>
+        <div class="middle-console color-gray" id="field-left-rocket-1"></div>
 
         <!-- <div class="gray-square top-square left-square" id="field-top-left-square"></div>
         <div class="gray-square top-square middle-square" id="field-top-middle-square"></div>
@@ -98,7 +104,41 @@
         
     </div>
     <div class="turret box" id="turret-box">
-        
+        <div class="encoder">
+            <div class="encoder-label">Left Drive</div>
+            <div class="encoder-val" id="left-drive-encoder-value">0.0</div>
+            <div class="checka encoder-reset" id="left-drive-reset">
+                <i class="fas fa-undo-alt"></i>
+            </div>
+        </div>
+        <div class="encoder">
+            <div class="encoder-label">Right Drive</div>
+            <div class="encoder-val" id="right-drive-encoder-value">0.0</div>
+            <div class="checka encoder-reset" id="right-drive-reset">
+                <i class="fas fa-undo-alt"></i>
+            </div>
+        </div>
+        <div class="encoder">
+            <div class="encoder-label">HA</div>
+            <div class="encoder-val" id="ha-encoder-value">Need Encoder</div>
+            <div class="checka encoder-reset landscape-reset" id="ha-reset">
+                <i class="fas fa-undo-alt"></i>
+            </div>
+        </div>
+        <div class="encoder">
+            <div class="encoder-label">VA</div>
+            <div class="encoder-val" id="va-encoder-value">0.0</div>
+            <div class="checka encoder-reset landscape-reset" id="va-reset">
+                <i class="fas fa-undo-alt"></i>
+            </div>
+        </div>
+        <div class="encoder">
+            <div class="encoder-label">Shooter</div>
+            <div class="encoder-val" id="shooter-encoder-value">0.0</div>
+            <div class="checka encoder-reset portrait-reset" id="shooter-reset">
+                <i class="fas fa-undo-alt"></i>
+            </div>
+        </div>
     
         <!-- <img class="orientation-grid" src="src/img/orientation-grid.gif" id="orientation-grid">
         <img class="orientation-grid arrow" id="turret-arrow" src="src/img/arrow.png">
@@ -114,7 +154,7 @@
     </div>
     <div class="power box" id="power-box">
         
-        <!-- <div class="bar-complex large-bar">
+        <div class="bar-complex large-bar">
             <span class="bar-text" >Battery Voltage</span>
             <progress id="voltage-bar" value = "0" max = "13" class="bar"></progress>
             <span class="bar-value" id="voltage-bar-value"><span id="voltage-bar-val" >0.00</span>V</span>
@@ -126,7 +166,7 @@
 
         </div>
         <div class="bar-complex small-bar">
-            <span class="bar-text">Drive Train</span>
+            <span class="bar-text">Drivetrain</span>
             <progress id="drive-train" value = "0" max = "532" class="bar"></progress>
                         <span id="drive-train-value" class="bar-value"><span id="drive-train-val" >0.00</span>A</span>
 
@@ -138,15 +178,21 @@
 
         </div>
         <div class="bar-complex small-bar">
-            <span class="bar-text">Intake Pivot</span>
+            <span class="bar-text">HA</span>
             <progress id="intake-pivot-draw" value = "0" max = "133" class="bar"></progress>
                         <span id="intake-pivot-draw-value" class="bar-value"><span id="intake-pivot-draw-val" >0.00</span>A</span>
 
         </div>
         <div class="bar-complex small-bar">
-            <span class="bar-text">Elevator</span>
-            <progress id="elevator-draw" value = "0" max = "266" class="bar"></progress>
-                        <span id="elevator-draw-value" class="bar-value"><span id="elevator-draw-val" >0.00</span>A</span>
+            <span class="bar-text">VA</span>
+            <progress id="shooter-draw" value = "0" max = "266" class="bar"></progress>
+                        <span id="shooter-draw-value" class="bar-value"><span id="shooter-draw-val" >0.00</span>A</span>
+
+        </div>
+        <div class="bar-complex small-bar">
+            <span class="bar-text">Shooter</span>
+            <progress id="shooter-draw" value = "0" max = "266" class="bar"></progress>
+                        <span id="shooter-draw-value" class="bar-value"><span id="shooter-draw-val" >0.00</span>A</span>
 
         </div>
         <div class="bar-complex large-bar">
@@ -164,21 +210,37 @@
         <div class="bar-complex large-bar">
             <span class="bar-text">Temperature</span>
             <progress id="temperature" value = "0" max = "120" class="bar" id="temperature"></progress>
-                        <span id="temperature-value" class="bar-value"><span id="temperature-val" >0.00</span>˚F</span> -->
+                        <span id="temperature-value" class="bar-value"><span id="temperature-val" >0.00</span>˚F</span>
 
         </div>
     </div>
-    <div class="vision box" id="vision-box">
+    <div>
+        <iframe class="vision box" id="vision-box" frameborder="0" scrolling="no" width="310" height="198"
+            src="http://10.16.61.207:5800" name="imgbox" id="imgbox">
+            <p>iframes are not supported by your browser.</p>
+        </iframe>
         <!-- <span class="status-title vision-status-title" id="vision-status-title">Vision: <span id="vision-status">OFF</span></span> -->
     </div>
     <div class="extra2 box" id="smusheen-box">
-
+        <img id="pusheen" src="./src/img/pusheen.gif" />
     </div>
-    <div class="extra box" id="pusheen-box">
-
+    <div class="extra box" id="pusheen-box">        
+        <div class="ultrasonic">
+            <div class="ultrasonic-title">Ultrasonic</div>
+            <div class="ultrasonic-value"><span id="ultrasonic">0.0</span> inches</div>
+            <div class="ultrasonic-blocked">Ball: <span id="ball-blocking"></span></div>
+        </div>
     </div>
     <div class="shot box" id="shot-box">
-
+        <div class="shot-status">
+            <div id="shot-status-light"></div>
+            <div class="shot-stats">
+                <div class="shot-title">Shot Status</div>
+                <div class="shot-stat">LY: <span id="limelight-y"></span></div>
+                <div id="range-status" class="shot-stat range-status">Distance:</div>
+                <div id="target-status" class="shot-stat target-status">Target:</div>
+            </div>
+        </div>
     </div>
     <div class="gear box" id="gear-box">
 
@@ -216,10 +278,10 @@
     
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <!-- <div id="login">
+    <div id="login">
         <input id="connect-address" type="text" value="localhost" disabled>
         <button id="connect" disabled>Connecting</button>
-    </div> -->
+    </div>
 
 
     <script>

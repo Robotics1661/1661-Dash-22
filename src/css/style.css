@@ -17,11 +17,50 @@
   src: url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.eot?#iefix) format("embedded-opentype"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff2) format("woff2"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff) format("woff"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.ttf) format("truetype"), url("fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.svg#San Francisco Display Bold") format("svg")
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+
+@font-face {
+    font-family: "Manrope";
+    src: url("../fonts/Manrope-ExtraLight.ttf") format("truetype");
+    font-weight: 200;
+}
+@font-face {
+    font-family: "Manrope";
+    src: url("../fonts/Manrope-Light.ttf") format("truetype");
+    font-weight: 300;
+}
+@font-face {
+    font-family: "Manrope";
+    src: url("../fonts/Manrope-Regular.ttf") format("truetype");
+    font-weight: 400;
+}
+@font-face {
+    font-family: "Manrope";
+    src: url("../fonts/Manrope-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Manrope";
+    src: url("../fonts/Manrope-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+}
+@font-face {
+    font-family: "Manrope";
+    src: url("../fonts/Manrope-Bold.ttf") format("truetype");
+    font-weight: 700;
+}
+@font-face {
+    font-family: "Manrope";
+    src: url("../fonts/Manrope-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+}
+
+/* @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap'); */
 
     
      * {
-        font-family: "Manrope", sans-serif;
+        font-family: "SF", sans-serif;
+        font-weight: 500;
         color: #F5F7FC;
         }
     body {
@@ -34,18 +73,19 @@
         top: 1.5vw;
         left: 2vw;
         font-size: 3vw;
-        /* font-family: "SF-Bold", sans-serif; */
-        font-weight: 600;
+        font-family: "SF-Bold", sans-serif;
+        font-weight: 800;
     }
     #subtitle {
         position: absolute;
-        top: 4.9vw;
+        top: 5.2vw;
         left: 2vw;
         font-size: 1.5vw;
         /* font-family: "SF", sans-serif; */
         background: linear-gradient(135deg, #f16000 0%,#ff2b51 100%);
         padding: .1vw .7vw .1vw .7vw;
         border-radius: 4vw;
+        font-weight: 700;
     }
     #name {
         position: absolute;
@@ -58,7 +98,7 @@
     #robot-state {
         position: absolute;
         top: 1.25vw;
-        left: 67vw;
+        left: 66vw;
         font-size: 2.25vw;
         /* font-family: "SF-Bold", sans-serif; */
         font-weight: 600;
@@ -70,6 +110,13 @@
         font-size: 2.25vw;
         /* font-family: "SF-Bold", sans-serif; */
         font-weight: 600;
+    }
+
+    .green-status {
+        color: rgb(8, 212, 127);
+    }
+    .red-status {
+        color: #f11000;
     }
 
     .box {
@@ -167,6 +214,10 @@
         top: 26vw;
         height: 8vw;
         width: 15vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
     .extra2 {
         position: absolute;
@@ -181,6 +232,10 @@
         top: 36vw;
         height: 11vw;
         width: 25vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
     .gear {
         position: absolute;
@@ -196,7 +251,7 @@
         margin: .5vw 1vw -.125vw 2vw;
     }
     .bar-complex:first-child {
-        margin: 1vw 1vw -.125vw 2vw; 
+        margin: 2vw 1vw -.125vw 2vw; 
     }
     .bar-text {
         display: block;
@@ -300,6 +355,9 @@
     .color-red {
         background: linear-gradient(135deg, #f16000 0%,#ff2b51 100%);
     }
+    .color-gray {
+        background: rgb(162, 166, 175);
+    }
 
     .swap-red-cargo {
         background: linear-gradient(135deg, #f16000 0%,#ff2b51 100%);
@@ -319,6 +377,19 @@
         height: .2vw;
         width: 15vw;
         opacity: 0.2;
+    }
+    .gray-line {
+        background: #F5F7FC;
+        height: .2vw;
+        opacity: 0.2;
+    }
+    .dividing-line {
+        position: absolute;
+        top: 17.9vw;
+        width: 19.8vw;
+        transform: rotate(156deg);
+        left: -.9vw;
+        border-radius: 20px;
     }
     .top-blue-line {
         position: absolute;
@@ -395,7 +466,64 @@
         top: 19.5vw;
     }
 
+    .middle-console {
+        position: relative;
+        left: 7vw;
+        top: 16vw;
+        height: 4vw;
+        width: 4vw;
+        border-radius: 0.4vw ;
+        box-shadow: 0 0 1.2vw rgba(0, 0, 0, .75);
+        transform: rotate(24deg);
+    }
+    .tarmac {
+        position: absolute;
+        height: 12vw;
+        width: 12vw;
+        left: 3vw;
+        top: 12vw;
+    }
 
+
+    /* Ultrasonic */
+
+    .ultrasonic {
+        text-align: center;
+    }
+
+    .ultrasonic-value {
+        font-size: 1.75vw;
+        padding: .25vw .75vw;
+        margin: .5vw 0;
+        background-color: #415359;
+        border-radius: .4vw;
+    }
+    #shot-status-light {
+        height: 4vw;
+        width: 4vw;
+        background-color: #f11000;
+        margin: 0 2vw;
+        border-radius: .4vw;
+    }
+    .shot-status {
+        text-align: left;
+        /* width: 23vw; */
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+    .shot-stats {
+        width: 18vw;
+    }
+    .shot-title {
+        font-size: 2vw;
+        margin-bottom: .5vw;
+    }
+    .shot-stat {
+        font-size: 1.25vw;
+        margin: .25vw 0;
+    }
 
     
     /*Jetson*/
@@ -596,38 +724,38 @@
     }
     .encoder:first-child {
         position: absolute;
-        height: 7vw;
-        width: 6.5vw;
-        left: .75vw;
-        top: .75vw;
+        height: 10vw;
+        width: 8.5vw;
+        left: 1vw;
+        top: 1vw;
     }
     .encoder:nth-child(2) {
         position: absolute;
-        height: 7vw;
-        width: 6.5vw;
-        left: 7.75vw;
-        top: .75vw;
+        height: 10vw;
+        width: 8.5vw;
+        left: 10.5vw;
+        top: 1vw;
     }
     .encoder:nth-child(3) {
         position: absolute;
-        height: 2.75vw;
-        width: 8vw;
-        left: .75vw;
-        top: 8.25vw;
+        height: 4vw;
+        width: 8.5vw;
+        left: 1vw;
+        top: 12vw;
     }
     .encoder:nth-child(4) {
         position: absolute;
-        height: 2.75vw;
-        width: 8vw;
-        left: .75vw;
-        top: 11.5vw;
+        height: 4vw;
+        width: 8.5vw;
+        left: 1vw;
+        top: 17vw;
     }
     .encoder:nth-child(5) {
         position: absolute;
-        height: 6vw;
-        width: 5vw;
-        left: 9.25vw;
-        top: 8.25vw;
+        height: 9vw;
+        width: 8.5vw;
+        left: 10.5vw;
+        top: 12vw;
     }
     .encoder-label {
         font-weight: 300;
@@ -638,23 +766,23 @@
         text-align: center;
     }
     .encoder:first-child .encoder-label, .encoder:nth-child(2) .encoder-label {
-        font-size: .625vw;
+        font-size: 1vw;
         margin-top: 1.75vw;
     }
     .encoder:first-child .encoder-val, .encoder:nth-child(2) .encoder-val {
-        margin-top: .625vw;
+        margin-top: 1vw;
         font-size: 1.5vw;
     }
     .encoder:nth-child(3) .encoder-label, .encoder:nth-child(4) .encoder-label {
-        font-size: .6vw;
-        margin-top: 0.5vw;
+        font-size: .875vw;
+        margin-top: 0.75vw;
     }
     .encoder:nth-child(3) .encoder-val, .encoder:nth-child(4) .encoder-val {
-        font-size: 1.125vw;
+        font-size: .875vw;
         margin-top: 0.025vw;
     }
     .encoder:nth-child(5) .encoder-label {
-        font-size: .6vw;
+        font-size: 1vw;
         margin-top: 1.75vw;
     }
     .encoder:nth-child(5) .encoder-val {
@@ -663,19 +791,19 @@
     }
     .encoder-reset {
         position: absolute;
-        width: 1vw;
-        height: 1vw;
-        font-size: .6vw;
-        top: 5.75vw!IMPORTANT;
-        left: 5vw!IMPORTANT;
+        width: 1.5vw;
+        height: 1.5vw;
+        font-size: .9vw;
+        top: 9vw!IMPORTANT;
+        left: 7.5vw!IMPORTANT;
     }
     .landscape-reset {
-        top: 1.5vw!IMPORTANT;
-        left: 6.75vw!IMPORTANT;
+        top: 3vw!IMPORTANT;
+        left: 7.5vw!IMPORTANT;
     }
     .portrait-reset {
-        top: 4.7vw!IMPORTANT;
-        left: 3.75vw!IMPORTANT;
+        top: 8vw!IMPORTANT;
+        left: 8.25w!IMPORTANT;
     }
 
     /*Extra Box*/
@@ -785,6 +913,14 @@
         margin: .2vw;
         font-weight: 500;
         font-size: 1.25vw;
+    }
+
+    #pusheen {
+        position: relative;
+        top: 1vw;
+        left: -1.5vw;
+        height: 8.5vw;
+        width: auto;
     }
 
 

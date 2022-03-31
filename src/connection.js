@@ -25,11 +25,13 @@ function onRobotConnection(connected) {
     ui.robotState.textContent = state;
     if (connected) {
         // On connect hide the connect popup
+        // ui.robotState.classList.addClass('green-status');
         document.body.classList.toggle('login', false);
     }
     else {
         // On disconnect show the connect popup
         document.body.classList.toggle('login', true);
+        // ui.robotState.classList.addClass('red-status');
         // Add Enter key handler
         address.onkeydown = ev => {
             if (ev.key === 'Enter') connect.click();

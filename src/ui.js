@@ -1,10 +1,12 @@
+let onTarget = false;
 
+window.alert = function() {};
+alert = function() {};
 // Define UI elements
-
 
 let ui = {
     timer: document.getElementById('timer'),
-    robotState: document.getElementById('robot-state').firstChild,
+    robotState: document.getElementById('robot-state'),
     gyro: {
         container: document.getElementById('orientation-grid'),
         val: 0,
@@ -17,23 +19,25 @@ let ui = {
     encoder: {
         lEnc: document.getElementById('left-drive-encoder-value'),
         rEnc: document.getElementById('right-drive-encoder-value'),
-        intakeEnc: document.getElementById('intake-encoder-value'),
-        rotationEnc: document.getElementById('rotation-encoder-value'),
-        elevatorEnc: document.getElementById('elevator-encoder-value'),
+        haEnc: document.getElementById('ha-encoder-value'),
+        vaEnc: document.getElementById('va-encoder-value'),
+        shooterEnc: document.getElementById('shooter-encoder-value'),
         
         lEncReset: document.getElementById('left-drive-reset'),
         rEncReset: document.getElementById('right-drive-reset'),
-        intakeEncReset: document.getElementById('intake-reset'),
-        rotationEncReset: document.getElementById('rotation-reset'),
-        elevatorEncReset: document.getElementById('elevator-reset')
+        haEncReset: document.getElementById('ha-reset'),
+        vaEncReset: document.getElementById('va-reset'),
+        shooterEncReset: document.getElementById('shooter-reset')
     
     },
+    ultrasonic: document.getElementById('ultrasonic'),
+    ballBlocking: document.getElementById('ball-blocking'),
     robotDiagram: {
         leftClawBar: document.getElementById('diagram-left-claw'),
         rightClawBar: document.getElementById('diagram-right-claw'),
         leftBallBar: document.getElementById('diagram-left-ball-intake'),
         rightBallBar: document.getElementById('diagram-right-ball-intake'),
-        rotationBar: document.getElementById('diagram-rotation'),
+        vaBar: document.getElementById('diagram-va'),
         elevatorBar: document.getElementById('diagram-elevator'),
         leftDriveBar: document.getElementById('diagram-left-drive'),
         rightDriveBar: document.getElementById('diagram-right-drive'),
@@ -42,7 +46,7 @@ let ui = {
         rightClawBarVal: document.getElementById('diagram-right-claw-val'),
         leftBallBarVal: document.getElementById('diagram-left-ball-intake-val'),
         rightBallBarVal: document.getElementById('diagram-right-ball-intake-val'),
-        rotationBarVal: document.getElementById('diagram-rotation-val'),
+        vaBarVal: document.getElementById('diagram-va-val'),
         elevatorBarVal: document.getElementById('diagram-elevator-val'),
         leftDriveBarVal: document.getElementById('diagram-left-drive-val'),
         rightDriveBarVal: document.getElementById('diagram-right-drive-val')
@@ -60,9 +64,9 @@ let ui = {
         voltage: document.getElementById('voltage-bar'),
         totaldraw: document.getElementById('total-draw'),
         drivedraw: document.getElementById('drive-train'),
-        intakedraw: document.getElementById('intake-draw'),
-        intakerotatedraw: document.getElementById('intake-pivot-draw'),
-        elevatordraw: document.getElementById('elevator-draw'),
+        haDraw: document.getElementById('ha-draw'),
+        vaDraw: document.getElementById('va-draw'),
+        shooterEnc: document.getElementById('shooter-draw'),
         velocity: document.getElementById('velocity'),
         acceleration: document.getElementById('acceleration'),
         temperature: document.getElementById('temperature'),
@@ -70,9 +74,9 @@ let ui = {
         voltageVal: document.getElementById('voltage-bar-val'),
         totaldrawVal: document.getElementById('total-draw-val'),
         drivedrawVal: document.getElementById('drive-train-val'),
-        intakedrawVal: document.getElementById('intake-draw-val'),
-        intakerotatedrawVal: document.getElementById('intake-pivot-draw-val'),
-        elevatordrawVal: document.getElementById('elevator-draw-val'),
+        hadrawVal: document.getElementById('ha-draw-val'),
+        vadrawVal: document.getElementById('va-draw-val'),
+        shooterDrawVal: document.getElementById('shooter-draw-val'),
         velocityVal: document.getElementById('velocity-val'),
         accelerationVal: document.getElementById('acceleration-val'),
         temperatureVal: document.getElementById('temperature-val')
@@ -90,6 +94,10 @@ let ui = {
     jetson: {
         console: document.getElementById('console-interior'),
         isConnected: document.getElementById('light')
+    },
+    limelight: {
+        feed: document.getElementById('limelight-feed'),
+        isConnected: document.getElementById('limelight-connected')
     },
     field: {
         topLeftSquare: document.getElementById('field-top-left-square'),
@@ -112,13 +120,19 @@ let ui = {
         bottomLine1: document.getElementById('field-bottom-line-1'),
         topLine2: document.getElementById('field-top-line-2'),
         bottomLine2: document.getElementById('field-bottom-line-2'),
+    },
+    shot: {
+        limelightY: document.getElementById('limelight-y'),
+        rangeStatus: document.getElementById('range-status'),
+        targetStatus: document.getElementById('target-status'),
+        shotLight: document.getElementById('shot-status-light')
     }
 };
 
 // Gyro rotation
 let updateGyro = (key, value) => {
     ui.gyro.val = value;
-    ui.gyro.visualVal = Math.floor(ui.gyro.val - ui.gyro.offset);
+    ui.gyro.visualVal = Math.floor((ui.gyro.val - ui.gyro.offset));
     ui.gyro.visualVal %= 360;
     if (ui.gyro.visualVal < 0) {
         ui.gyro.visualVal += 360;
@@ -134,23 +148,23 @@ ui.gyro.reset.onclick = function() {
 
 // Takes left encoder value
 NetworkTables.addKeyListener('/SmartDashboard/lEnc', (key, value) => {
-    ui.encoder.lEnc.innerHTML = (Math.floor(value * 10) / 10).toFixed(1);
+    ui.encoder.lEnc.innerHTML = (Math.floor(value * 10) / 2048).toFixed(1);
 });
 // Takes right encoder value
 NetworkTables.addKeyListener('/SmartDashboard/rEnc', (key, value) => {
-    ui.encoder.rEnc.innerHTML = (Math.floor(value * 10) / 10).toFixed(1);
+    ui.encoder.rEnc.innerHTML = (Math.floor(value * 10) / 2048).toFixed(1);
 });
-// Takes intake encoder value
-NetworkTables.addKeyListener('/SmartDashboard/intakeEnc', (key, value) => {
-    ui.encoder.intakeEnc.innerHTML = (Math.floor(value * 10) / 10).toFixed(1);
+// Takes horizontal agitator encoder value -- jk
+NetworkTables.addKeyListener('/SmartDashboard/haEnc', (key, value) => {
+    ui.encoder.haEnc.innerHTML = (Math.floor(value * 10) / 2048).toFixed(1);
 });
-// Takes rotation encoder value
-NetworkTables.addKeyListener('/SmartDashboard/rotationEnc', (key, value) => {
-    ui.encoder.rotationEnc.innerHTML = (Math.floor(value * 10) / 10).toFixed(1);
+// Takes vertical agitator encoder value
+NetworkTables.addKeyListener('/SmartDashboard/vaEnc', (key, value) => {
+    ui.encoder.vaEnc.innerHTML = (Math.floor(value * 10) / 2048).toFixed(1);
 });
-// Takes elevator encoder value
-NetworkTables.addKeyListener('/SmartDashboard/elevatorEnc', (key, value) => {
-    ui.encoder.elevatorEnc.innerHTML = (Math.floor(value * 10) / 10).toFixed(1);
+// Takes shooter encoder value
+NetworkTables.addKeyListener('/SmartDashboard/shooterEnc', (key, value) => {
+    ui.encoder.shooterEnc.innerHTML = (Math.floor(value * 10) / 2048).toFixed(1);
 });
 
 ui.encoder.lEncReset.onclick = function() {
@@ -161,17 +175,17 @@ ui.encoder.rEncReset.onclick = function() {
     NetworkTables.putValue('/SmartDashboard/rEncReset', true);
     NetworkTables.putValue('/SmartDashboard/rEnc', 0);
 };
-ui.encoder.intakeEncReset.onclick = function() {
-    NetworkTables.putValue('/SmartDashboard/intakeEncReset', true);
-    NetworkTables.putValue('/SmartDashboard/intakeEnc', 0);
+ui.encoder.haEncReset.onclick = function() {
+    NetworkTables.putValue('/SmartDashboard/haEncReset', true);
+    NetworkTables.putValue('/SmartDashboard/haEnc', 0);
 };
-ui.encoder.rotationEncReset.onclick = function() {
-    NetworkTables.putValue('/SmartDashboard/rotationEncReset', true);
-    NetworkTables.putValue('/SmartDashboard/rotationEnc', 0);
+ui.encoder.vaEncReset.onclick = function() {
+    NetworkTables.putValue('/SmartDashboard/vaEncReset', true);
+    NetworkTables.putValue('/SmartDashboard/vaEnc', 0);
 };
-ui.encoder.elevatorEncReset.onclick = function() {
-    NetworkTables.putValue('/SmartDashboard/elevatorEncReset', true);
-    NetworkTables.putValue('/SmartDashboard/elevatorEnc', 0);
+ui.encoder.shooterEncReset.onclick = function() {
+    NetworkTables.putValue('/SmartDashboard/shooterEncReset', true);
+    NetworkTables.putValue('/SmartDashboard/shooterEnc', 0);
 };
 
 function onStart () {
@@ -217,12 +231,12 @@ NetworkTables.addKeyListener('/SmartDashboard/rightBallIntake', (key, value) => 
     ui.robotDiagram.rightBallBarVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
     ui.robotDiagram.rightBallBar.value = 1 + (Math.floor(value * 100) / 100);
 });
-NetworkTables.addKeyListener('/SmartDashboard/intakerotate', (key, value) => {
+NetworkTables.addKeyListener('/SmartDashboard/va', (key, value) => {
     let num = Math.floor((value + 100) / 2);
-    ui.robotDiagram.rotationBarVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
-    ui.robotDiagram.rotationBar.value = 1 + (Math.floor(value * 100) / 100);
+    ui.robotDiagram.vaBarVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
+    ui.robotDiagram.vaBar.value = 1 + (Math.floor(value * 100) / 100);
 });
-NetworkTables.addKeyListener('/SmartDashboard/elevator', (key, value) => {
+NetworkTables.addKeyListener('/SmartDashboard/shooter', (key, value) => {
     let num = Math.floor((value + 100) / 2);
     ui.robotDiagram.elevatorBarVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
     ui.robotDiagram.elevatorBar.value = 1 + (Math.floor(value * 100) / 100);
@@ -237,21 +251,21 @@ NetworkTables.addKeyListener('/SmartDashboard/totaldraw', (key, value) => {
     ui.power.totaldrawVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
     ui.power.totaldraw.value = value;
 });
-NetworkTables.addKeyListener('/SmartDashboard/drivedraw', (key, value) => {
+NetworkTables.addKeyListener('/SmartDashboard/driveDraw', (key, value) => {
     ui.power.drivedrawVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
     ui.power.drivedraw.value = value;
 });
-NetworkTables.addKeyListener('/SmartDashboard/intakedraw', (key, value) => {
-    ui.power.intakedrawVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
-    ui.power.intakedraw.value = value;
+NetworkTables.addKeyListener('/SmartDashboard/hadraw', (key, value) => {
+    ui.power.hadrawVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
+    ui.power.hadraw.value = value;
 });
-NetworkTables.addKeyListener('/SmartDashboard/intakerotatedraw', (key, value) => {
-    ui.power.intakerotatedrawVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
-    ui.power.intakerotatedraw.value = value;
+NetworkTables.addKeyListener('/SmartDashboard/vadraw', (key, value) => {
+    ui.power.vadrawVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
+    ui.power.vaDraw.value = value;
 });
-NetworkTables.addKeyListener('/SmartDashboard/elevatordraw', (key, value) => {
-    ui.power.elevatordrawVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
-    ui.power.elevatordraw.value = value;
+NetworkTables.addKeyListener('/SmartDashboard/shooterDraw', (key, value) => {
+    ui.power.shooterDrawVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
+    ui.power.shooterDraw.value = value;
 });
 NetworkTables.addKeyListener('/SmartDashboard/velocity', (key, value) => {
     ui.power.velocityVal.innerHTML = (Math.floor(value * 100) / 100).toFixed(2);
@@ -268,6 +282,52 @@ NetworkTables.addKeyListener('/SmartDashboard/temperature', (key, value) => {
     ui.power.temperature.value = percent;
 });
 
+NetworkTables.addKeyListener('/SmartDashboard/ultrasonic', (key, value) => {
+    ui.ultrasonic.innerHTML = value.toFixed(2);
+    if (value > 13.0 && value < 14.3) {
+        ui.ballBlocking.innerHTML = "NOT BLOCKED";
+    }
+    else {
+        ui.ballBlocking.innerHTML = "BLOCKED";
+    }
+    ui.ultrasonic.value = value;
+});
+NetworkTables.addKeyListener('/SmartDashboard/onTarget', (key, value) => {
+    onTarget = value;
+    alert(onTarget);
+    ui.shot.targetStatus.innerHTML = value ? "On Target" : "Target Not Found";
+    ui.shot.targetStatus.style.color = value ? "#51ff00" : "#f11000";
+});
+NetworkTables.addKeyListener('/SmartDashboard/LimelightY', (key, value) => {
+    ui.shot.limelightY.innerHTML = value.toFixed(3);
+    if (onTarget) {
+        if (value > 8.3 && value < 9.1) {
+            ui.shot.rangeStatus.innerHTML = "Amazing";
+            ui.shot.rangeStatus.style.color = "#1cf100";
+            ui.shot.shotLight.style.background = "#1cf100";
+        }
+        else if (value > 7.3 && value < 9.6) {
+            ui.shot.rangeStatus.innerHTML = "Good";
+            ui.shot.rangeStatus.style.color = "#b9f100";
+            ui.shot.shotLight.style.background = "#b9f100";
+        }
+        else if (value > 9.6) {
+            ui.shot.rangeStatus.innerHTML = "Move Farther";
+            ui.shot.rangeStatus.style.color = "#f16000";
+            ui.shot.shotLight.style.background = "#f16000";
+        }
+        else if (value < 8.2) {
+            ui.shot.rangeStatus.innerHTML = "Move Closer";
+            ui.shot.rangeStatus.style.color = "#f16000";
+            ui.shot.shotLight.style.background = "#f16000";
+        }
+    }
+    else {
+        ui.shot.rangeStatus.innerHTML = "Not on Target"
+        ui.shot.rangeStatus.style.color = "#f16000";
+        ui.shot.shotLight.style.background = "#f16000";
+    }
+});
 NetworkTables.addKeyListener('/SmartDashboard/p', (key, value) => {
     ui.pid.p.value = value;
     ui.pid.save.style.background = '#415359';
@@ -349,6 +409,10 @@ ui.auto.right.onclick = function() {
   NetworkTables.putValue('/SmartDashboard/automode', 2);
 }
 
+NetworkTables.addKeyListener('/SmartDashboard/limelight', (key, value) => {
+    let feed = NetworkTables.getValue();
+});
+
 // Not yet sure how to format these
 NetworkTables.addKeyListener('/SmartDashboard/consoleOutput', (key, value) => {
     var newValue = current.concat(value).concat("\n");
@@ -363,7 +427,7 @@ NetworkTables.addKeyListener('/SmartDashboard/jetsonConnected', (key, value) => 
         ui.jetson.isConnected.classList.remove('color-icon');
     }
 });
-
+NetworkTables.addKeyListener('/SmartDashboard/')
 NetworkTables.addKeyListener('/SmartDashboard/timer', (key, value) => {
     ui.timer.innerHTML = 'REMAINING TIME: ' + (value < 0 ? '0:00' : Math.floor(value / 60) + ':'
     + (value % 60 < 10 ? '0' : '') + Math.floor(value % 60 * 10) / 10 + (Math.floor(value % 60 * 10) / 10 === Math.floor(value % 60) ? '.0' : ''));
@@ -423,6 +487,7 @@ NetworkTables.addKeyListener('/SmartDashboard/isred', (key, value) => {
     }
    
 });
+
 // NetworkTables.addKeyListener('/SmartDashboard/scale1left', (key, value) => {
 //     ui.field.scale1left.style.background = (value == NetworkTables.getValue('/SmartDashboard/isred')) ? 'red' : 'blue';
 //     ui.field.scale1right.style.background = (value == NetworkTables.getValue('/SmartDashboard/isred')) ? 'blue' : 'red';
