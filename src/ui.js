@@ -100,6 +100,7 @@ let ui = {
         isConnected: document.getElementById('limelight-connected')
     },
     field: {
+        tarmac: document.getElementById('tarmac'),
         topLeftSquare: document.getElementById('field-top-left-square'),
         topMiddleSquare: document.getElementById('field-top-middle-square'),
         topRightSquare: document.getElementById('field-top-right-square'),
@@ -120,6 +121,11 @@ let ui = {
         bottomLine1: document.getElementById('field-bottom-line-1'),
         topLine2: document.getElementById('field-top-line-2'),
         bottomLine2: document.getElementById('field-bottom-line-2'),
+        autoSpotMidLeft: document.getElementById('auto-spot-mid-left'),
+        autoSpotMidRight: document.getElementById('auto-spot-mid-right'),
+        autoSpotFarLeft: document.getElementById('auto-spot-far-left'),
+        autoSpotFarRight: document.getElementById('auto-spot-far-right'),
+        autoSimple: document.getElementById('auto-simple'),
     },
     shot: {
         limelightY: document.getElementById('limelight-y'),
@@ -190,10 +196,10 @@ ui.encoder.shooterEncReset.onclick = function() {
 
 function onStart () {
 
-    ui.auto.leftPath.hidden = true;
-    ui.auto.leftMiddlePath.hidden = true;
-    ui.auto.rightMiddlePath.hidden = true;
-    ui.auto.rightPath.hidden = true;
+    // ui.auto.leftPath.hidden = true;
+    // ui.auto.leftMiddlePath.hidden = true;
+    // ui.auto.rightMiddlePath.hidden = true;
+    // ui.auto.rightPath.hidden = true;
 }
 
 NetworkTables.addKeyListener('/SmartDashboard/lDrive', (key, value) => {
@@ -282,6 +288,62 @@ NetworkTables.addKeyListener('/SmartDashboard/temperature', (key, value) => {
     ui.power.temperature.value = percent;
 });
 
+NetworkTables.addKeyListener('/SmartDashboard/automode', (key, value) => {
+    if (value == "midLeft") {
+        ui.field.autoSpotMidLeft.classList.add("auto-spot-selected");
+        ui.field.autoSpotMidRight.classList.remove("auto-spot-selected");
+        ui.field.autoSpotFarLeft.classList.remove("auto-spot-selected");
+        ui.field.autoSpotFarRight.classList.remove("auto-spot-selected");
+        ui.field.autoSimple.classList.remove("simple-selected");
+    }
+    else if (value == "midRight") {
+        ui.field.autoSpotMidRight.classList.add("auto-spot-selected");
+        ui.field.autoSpotMidLeft.classList.remove("auto-spot-selected");
+        ui.field.autoSpotFarLeft.classList.remove("auto-spot-selected");
+        ui.field.autoSpotFarRight.classList.remove("auto-spot-selected");
+        ui.field.autoSimple.classList.remove("simple-selected");
+    }
+    else if (value == "farLeft") {
+        ui.field.autoSpotFarLeft.classList.add("auto-spot-selected");
+        ui.field.autoSpotMidRight.classList.remove("auto-spot-selected");
+        ui.field.autoSpotMidLeft.classList.remove("auto-spot-selected");
+        ui.field.autoSpotFarRight.classList.remove("auto-spot-selected");
+        ui.field.autoSimple.classList.remove("simple-selected");
+    }
+    else if (value == "farRight") {
+        ui.field.autoSpotFarRight.classList.add("auto-spot-selected");
+        ui.field.autoSpotMidRight.classList.remove("auto-spot-selected");
+        ui.field.autoSpotFarLeft.classList.remove("auto-spot-selected");
+        ui.field.autoSpotMidLeft.classList.remove("auto-spot-selected");
+        ui.field.autoSimple.classList.remove("simple-selected");
+    }
+    else {
+        ui.field.autoSimple.classList.add("simple-selected");
+        ui.field.autoSpotFarRight.classList.remove("auto-spot-selected");
+        ui.field.autoSpotMidRight.classList.remove("auto-spot-selected");
+        ui.field.autoSpotFarLeft.classList.remove("auto-spot-selected");
+        ui.field.autoSpotMidLeft.classList.remove("auto-spot-selected");
+    }
+});
+
+ui.field.autoSpotMidLeft.onclick = function() {
+  NetworkTables.putValue('/SmartDashboard/automode', "midLeft");
+}
+ui.field.autoSpotMidRight.onclick = function() {
+  NetworkTables.putValue('/SmartDashboard/automode', "midRight");
+}
+ui.field.autoSpotFarLeft.onclick = function() {
+  NetworkTables.putValue('/SmartDashboard/automode', "farLeft");
+}
+ui.field.autoSpotFarRight.onclick = function() {
+  NetworkTables.putValue('/SmartDashboard/automode', "farRight");
+}
+ui.field.autoSimple.onclick = function() {
+    NetworkTables.putValue('/SmartDashboard/automode', "simple");
+  }
+  
+
+
 NetworkTables.addKeyListener('/SmartDashboard/ultrasonic', (key, value) => {
     ui.ultrasonic.innerHTML = value.toFixed(2);
     if (value > 13.0 && value < 14.3) {
@@ -362,52 +424,50 @@ function handleChange(checkbox) {
 }
 
 
-NetworkTables.addKeyListener('/SmartDashboard/pants', (key, value) => {
+// NetworkTables.addKeyListener('/SmartDashboard/pants', (key, value) => {
 
-    ui.auto.leftMiddlePath.hidden = true;
-    ui.auto.rightMiddlePath.hidden = true;
-    let currentMode = NetworkTables.getValue('/SmartDashboard/automode');
-    if (currentMode == 1) {
-        if (value)  ui.auto.rightMiddlePath.hidden = false;
-     else ui.auto.leftMiddlePath.hidden = false;
-    }
+//     ui.auto.leftMiddlePath.hidden = true;
+//     ui.auto.rightMiddlePath.hidden = true;
+//     let currentMode = NetworkTables.getValue('/SmartDashboard/automode');
+//     if (currentMode == 1) {
+//         if (value)  ui.auto.rightMiddlePath.hidden = false;
+//      else ui.auto.leftMiddlePath.hidden = false;
+//     }
 
-});
+// });
 
-NetworkTables.addKeyListener('/SmartDashboard/automode', (key, value) => {
+// NetworkTables.addKeyListener('/SmartDashboard/automode', (key, value) => {
 
-    ui.auto.left.style.background = '#21282B';
-    ui.auto.middle.style.background = '#21282B';
-    ui.auto.right.style.background = '#21282B';
+//     ui.auto.left.style.background = '#21282B';
+//     ui.auto.middle.style.background = '#21282B';
+//     ui.auto.right.style.background = '#21282B';
 
-    ui.auto.leftPath.hidden = true;
-    ui.auto.leftMiddlePath.hidden = true;
-    ui.auto.rightMiddlePath.hidden = true;
-    ui.auto.rightPath.hidden = true;
+//     ui.auto.leftPath.hidden = true;
+//     ui.auto.leftMiddlePath.hidden = true;
+//     ui.auto.rightMiddlePath.hidden = true;
+//     ui.auto.rightPath.hidden = true;
  
-   let pantsVal = NetworkTables.getValue('/SmartDashboard/pants');
-   if(value === 0){
-     ui.auto.left.style.background = 'linear-gradient(135deg, #f16000 0%,#ff2b51 100%)';
-     ui.auto.leftPath.hidden = false;
-   } else if(value === 1){
-     ui.auto.middle.style.background = 'linear-gradient(135deg, #f16000 0%,#ff2b51 100%)';
-     if(pantsVal)  ui.auto.rightMiddlePath.hidden = false;
-     else  ui.auto.leftMiddlePath.hidden = false;
-   } else {
-     ui.auto.right.style.background = 'linear-gradient(135deg, #f16000 0%,#ff2b51 100%)';
-     ui.auto.rightPath.hidden = false;
+//    let pantsVal = NetworkTables.getValue('/SmartDashboard/pants');
+//    if(value === 0){
+//      ui.auto.left.style.background = 'linear-gradient(135deg, #f16000 0%,#ff2b51 100%)';
+//      ui.auto.leftPath.hidden = false;
+//    } else if(value === 1){
+//      ui.auto.middle.style.background = 'linear-gradient(135deg, #f16000 0%,#ff2b51 100%)';
+//      if(pantsVal)  ui.auto.rightMiddlePath.hidden = false;
+//      else  ui.auto.leftMiddlePath.hidden = false;
+//    } else {
+//      ui.auto.right.style.background = 'linear-gradient(135deg, #f16000 0%,#ff2b51 100%)';
+//      ui.auto.rightPath.hidden = false;
 
-   }
-});
-ui.auto.left.onclick = function() {
-  NetworkTables.putValue('/SmartDashboard/automode', 0);
-}
-ui.auto.middle.onclick = function() {
-  NetworkTables.putValue('/SmartDashboard/automode', 1);
-}
-ui.auto.right.onclick = function() {
-  NetworkTables.putValue('/SmartDashboard/automode', 2);
-}
+//    }
+// });
+
+
+
+ui.encoder.lEncReset.onclick = function() {
+    NetworkTables.putValue('/SmartDashboard/lEncReset', true);
+    NetworkTables.putValue('/SmartDashboard/lEnc', 0);
+};
 
 NetworkTables.addKeyListener('/SmartDashboard/limelight', (key, value) => {
     let feed = NetworkTables.getValue();
@@ -441,6 +501,7 @@ NetworkTables.addKeyListener('/SmartDashboard/timer', (key, value) => {
 NetworkTables.addKeyListener('/SmartDashboard/isred', (key, value) => {
 
     if (value) {
+        ui.field.tarmac.classList.remove('flip');
         ui.field.leftRocket1.classList.remove('color-red');
         ui.field.rightRocket1.classList.remove('color-red');
         ui.field.leftRocket1.classList.add('color-blue');
@@ -484,6 +545,7 @@ NetworkTables.addKeyListener('/SmartDashboard/isred', (key, value) => {
         ui.field.topLine2.classList.add('blue-line');
         ui.field.bottomLine2.classList.remove('red-line');
         ui.field.bottomLine2.classList.add('blue-line');
+        ui.field.tarmac.classList.add('flip');
     }
    
 });
